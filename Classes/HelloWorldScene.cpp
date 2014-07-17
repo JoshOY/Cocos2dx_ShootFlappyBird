@@ -37,33 +37,50 @@ bool HelloWorld::init()
 
 	this->setTouchEnabled(true);
 	this->schedule(schedule_selector(HelloWorld::gameLogic), 1);
-	
+	this->schedule(schedule_selector(HelloWorld::update));
+
+	_targets = new CCArray;
+	_birds = new CCArray;
+
+	//注意上面两个CCArray无法自动释放，再析构函数中要释放
+
+
 
 	//CCDirector::sharedDirector()->getTouchDispatcher()->addTargetedDelegate(this, 1, true);
 
 	return true;
+}
 
+HelloWorld::~HelloWorld()
+{
+	if (_targets != NULL)
+		_targets->release();
+	if (_birds != NULL)
+		_birds->release();
 }
 
 void HelloWorld::gameLogic(float dt)
 {
-	this->createRedBird();
+	this->createPipe();
 }
 
-void HelloWorld::createRedBird()
+void HelloWorld::createPipe()
 {
 	CCSize screenSize = CCDirector::sharedDirector()->getVisibleSize();
-	//添加一只红鸟
-	CCSprite* newbird = CCSprite::create("angrybird2.png");
+	//添加一只管子
+	CCSprite* newpipe = CCSprite::create("pipeLandscape.png");
 	int y = rand() % (int)(screenSize.height);
-	newbird->setPosition(ccp(0, y));
-	this->addChild(newbird);
+	newpipe->setPosition(ccp(screenSize.width - 20, y));
+	this->addChild(newpipe);
 
-	CCMoveTo* movement = CCMoveTo::create(2, ccp(screenSize.width / 2 + 20, screenSize.height / 2));
-	CCCallFunc* SelfDefinedAction = CCCallFuncN::create(this, callfuncN_selector(HelloWorld::redbirdDisappear));
+	newpipe->setTag(1);
+	_targets->addObject(newpipe);
+
+	CCMoveTo* movement = CCMoveTo::create(2, ccp(0, newpipe->getPositionY()) );
+	CCCallFunc* SelfDefinedAction = CCCallFuncN::create(this, callfuncN_selector(HelloWorld::pipeDisappear));
 	CCSequence* actions = CCSequence::create(movement, SelfDefinedAction, NULL);
 
-	newbird->runAction(actions);
+	newpipe->runAction(actions);
 }
 
 void HelloWorld::menuResponseFunc(CCObject* obj)
@@ -74,16 +91,23 @@ void HelloWorld::menuResponseFunc(CCObject* obj)
 	//redbird->runAction(movement);
 	
 	
-	CCCallFunc* SelfDefinedAction = CCCallFuncN::create(this, callfuncN_selector(HelloWorld::redbirdDisappear));
+	CCCallFunc* SelfDefinedAction = CCCallFuncN::create(this, callfuncN_selector(HelloWorld::pipeDisappear));
 	CCSequence* actions = CCSequence::create(movement, SelfDefinedAction, NULL);
 	
 	redbird->runAction(actions);
 	
 }
 
-void HelloWorld::redbirdDisappear(CCNode* who)
+void HelloWorld::pipeDisappear(CCNode* who)
 {
 	//who->setPosition(ccp(redbird->getPositionX(), redbird->getPositionY()));
+	int tag = who->getTag();
+	if (tag == 2) {
+		_birds->removeObject(who);
+	} else if (tag == 1) {
+		_targets->removeObject(who);
+	}
+
 	who->removeFromParentAndCleanup(true);
 }
 
@@ -98,7 +122,6 @@ void HelloWorld::menuCloseCallback(CCObject* pSender)
 #endif
 #endif
 }
-
 
 void HelloWorld::ccTouchesEnded(CCSet* pTouches, CCEvent* pEvent)
 {
@@ -123,6 +146,9 @@ void HelloWorld::ccTouchesEnded(CCSet* pTouches, CCEvent* pEvent)
 	enemy->setPosition(ccp(20, visibleSize.height / 2.0) );
 	this->addChild(enemy);
 
+	enemy->setTag(2);
+	_birds->addObject(enemy);
+
 	//数学公式orz，由相似三角形推出~
 	//
 	double dx = locationFixed.x - 20;
@@ -137,9 +163,58 @@ void HelloWorld::ccTouchesEnded(CCSet* pTouches, CCEvent* pEvent)
 
 	//然后就确定好了对应的移动目标点动作
 	CCMoveTo* move = CCMoveTo::create(D/320, ccp(endx, endy) );
-	CCCallFuncN* moveFinish = CCCallFuncN::create(this, callfuncN_selector(HelloWorld::redbirdDisappear));
+	CCCallFuncN* moveFinish = CCCallFuncN::create(this, callfuncN_selector(HelloWorld::pipeDisappear));
 	CCSequence* actions = CCSequence::create(move, moveFinish, NULL);
 
 	enemy->runAction(actions);
 }
 
+void HelloWorld::update(float delta) // delta = 1.0 / fps
+{
+	CCArray* targetsToDelete = new CCArray;
+	CCArray* birdsToDelete = new CCArray;
+	CCObject* iTarget;
+	CCObject* iBird;
+	
+
+	CCARRAY_FOREACH(_targets, iTarget) {
+		CCSprite* target = (CCSprite*)iTarget;
+		CCRect targetZone = CCRectMake(target->getPositionX()
+			, target->getPositionY()
+			, target->getContentSize().width
+			, target->getContentSize().height);
+
+		CCARRAY_FOREACH(_birds, iBird) {
+			CCSprite* bird = (CCSprite*)iBird;
+			CCRect birdZone = CCRectMake(bird->getPositionX()
+				, bird->getPositionY()
+				, bird->getContentSize().width
+				, bird->getContentSize().height);
+
+			
+			if (targetZone.intersectsRect(birdZone)) {
+				birdsToDelete->addObject(iBird);
+				targetsToDelete->addObject(iTarget);
+			} //完成对bird的遍历
+		} //完成对pipe的遍历
+	}
+
+	CCARRAY_FOREACH(birdsToDelete, iBird) {
+		_birds->removeObject(iBird);
+		CCSprite* bird = (CCSprite*)iBird;
+		bird->removeFromParentAndCleanup(true);
+	}
+
+	CCARRAY_FOREACH(targetsToDelete, iTarget) {
+		_targets->removeObject(iTarget);
+		CCSprite* target = (CCSprite*)iTarget;
+		target->removeFromParentAndCleanup(true);
+	}
+
+	targetsToDelete->release();
+	birdsToDelete->release();
+}
+
+	
+
+	

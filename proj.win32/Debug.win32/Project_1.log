@@ -1,4 +1,4 @@
-﻿生成启动时间为 2014/7/8 0:07:09。
+﻿生成启动时间为 2014/7/17 10:54:18。
      1>项目“F:\Programming\cocos2d-x-2.2.4\projects\Project_1\proj.win32\Project_1.vcxproj”在节点 2 上(Build 个目标)。
      1>ClCompile:
          F:\Programming\VisualStudio2013\VC\bin\CL.exe /c /I"F:\Programming\cocos2d-x-2.2.4\projects\Project_1\proj.win32\..\..\..\cocos2dx" /I"F:\Programming\cocos2d-x-2.2.4\projects\Project_1\proj.win32\..\..\..\cocos2dx\include" /I"F:\Programming\cocos2d-x-2.2.4\projects\Project_1\proj.win32\..\..\..\cocos2dx\kazmath\include" /I"F:\Programming\cocos2d-x-2.2.4\projects\Project_1\proj.win32\..\..\..\cocos2dx\platform\win32" /I"F:\Programming\cocos2d-x-2.2.4\projects\Project_1\proj.win32\..\..\..\cocos2dx\platform\third_party\win32" /I"F:\Programming\cocos2d-x-2.2.4\projects\Project_1\proj.win32\..\..\..\cocos2dx\platform\third_party\win32\OGLES" /I"F:\Programming\cocos2d-x-2.2.4\projects\Project_1\proj.win32\..\..\..\external" /I"F:\Programming\cocos2d-x-2.2.4\projects\Project_1\proj.win32\..\..\..\external\chipmunk\include\chipmunk" /I"F:\Programming\cocos2d-x-2.2.4\projects\Project_1\proj.win32\..\..\..\CocosDenshion\include" /I"F:\Programming\cocos2d-x-2.2.4\projects\Project_1\proj.win32\..\..\..\extensions" /I..\Classes /I.. /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USE_MATH_DEFINES /D GL_GLEXT_PROTOTYPES /D CC_ENABLE_CHIPMUNK_INTEGRATION=1 /D COCOS2D_DEBUG=1 /D _CRT_SECURE_NO_WARNINGS /D _SCL_SECURE_NO_WARNINGS /D _USING_V110_SDK71_ /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug.win32\\" /Fd"Debug.win32\vc120.pdb" /Gd /TP /wd4267 /wd4251 /wd4244 /analyze- /errorReport:prompt ..\Classes\HelloWorldScene.cpp
@@ -22,4 +22,4 @@
 
 生成成功。
 
-已用时间 00:00:01.18
+已用时间 00:00:01.23
