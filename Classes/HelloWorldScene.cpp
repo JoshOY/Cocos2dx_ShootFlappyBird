@@ -1,4 +1,5 @@
 #include "HelloWorldScene.h"
+#include "SimpleAudioEngine.h"
 
 USING_NS_CC;
 
@@ -44,7 +45,8 @@ bool HelloWorld::init()
 
 	//注意上面两个CCArray无法自动释放，再析构函数中要释放
 
-
+	//Music part
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("Little_Apple.mp3");
 
 	//CCDirector::sharedDirector()->getTouchDispatcher()->addTargetedDelegate(this, 1, true);
 
